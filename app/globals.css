@@ -1,0 +1,36 @@
+@import "tailwindcss";
+html {
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.hero {
+  position: relative; /* مهم للـ absolute background */
+  width: 100%;
+  min-height: 100vh; /* عشان يغطي الشاشة */
+  overflow: hidden; /* يمنع overflow لما تصغر الشاشة */
+}
+.hero-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #d6f9ff79;
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(139, 92, 246, 0.2) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      circle at 1px 1px,
+      rgba(59, 130, 246, 0.18) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      circle at 1px 1px,
+      rgba(236, 72, 153, 0.15) 1px,
+      transparent 0
+    );
+  background-size: 20px 20px, 30px 30px, 25px 25px;
+  background-position: 0 0, 10px 10px, 15px 5px;
+}
