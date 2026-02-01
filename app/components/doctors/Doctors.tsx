@@ -87,10 +87,10 @@ const Doctors = () => {
                   </span>
                 </div>
                 <div className="flex flex-col gap-3 justify-center mt-5 px-2 w-full text-center my-5">
-                  <Button href="/" size="samll" type="primary">
+                  <Button href={`/doctors/${doctor._id}`} size="small" kind="primary">
                     profile
                   </Button>
-                  <Button href="/" size="samll" type="secondary">
+                  <Button href={`/${doctor._id}`} size="small" kind="secondary">
                     book appoitment
                   </Button>
                 </div>

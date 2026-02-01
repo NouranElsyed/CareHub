@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "./providers/ReactQueryProvider";
 import Header from "./components/header/Header";
-
+import { Toaster } from 'react-hot-toast';
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,13 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-y-scroll">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased my-0`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased my-0 min-h-screen flex justify-center items-center `}
       >
         <ReactQueryProvider>
           <div className="hero-bg" />
           <Header />
-          <main className="z-10"> {children}</main>
-        
+          <main className="z-10  w-full"> {children}</main>
+           <Toaster />
         </ReactQueryProvider>
       </body>
     </html>

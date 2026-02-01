@@ -4,19 +4,23 @@ import { useState } from "react";
 import DropDown from "../ui/Dropdown";
 import Button from "../ui/Button";
 import Link from "next/link";
-
+import { Stethoscope } from "lucide-react";
 export const navList = [
   { nav: "Home", href: "/" },
   { nav: "Doctors", href: "/doctors" },
 ];
 
 const Header = () => {
+  const user = localStorage.getItem("user");
+  const logined = user?JSON.parse(user):""
+  const [signupPage, setSignupPage] = useState(
+    location.pathname === `/auth/register`,
+  );
   const [isScroll, setIsScroll] = useState(false);
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (current) => {
     setIsScroll((prev) => {
       const next = current > 60;
-      console.log(prev !== next);
       return prev !== next ? next : prev;
     });
   });
@@ -28,7 +32,13 @@ const Header = () => {
           : "    px-7 bg-transparent text-cyan-900"
       }`}
     >
-      <Link href={"/"} className="logo font-bold text-2xl cursor-pointer">CareHub</Link>
+      <Link href={"/"} className="logo font-bold text-2xl cursor-pointer flex items-center">
+        <div className="me-2 rounded-lg bg-cyan-500 text-white p-2"><Stethoscope size={22} strokeWidth={3} /> </div>
+        Care
+        <span className={  isScroll
+          ? " text-cyan-500"
+          : " text-cyan-500"}>Hub</span> 
+      </Link>
       <ul className="hidden md:flex justify-between gap-10">
         {navList.map((el, index) => {
           return (
@@ -47,14 +57,18 @@ const Header = () => {
       </ul>
       {/* Actions */}
       <div className="flex items-center gap-4">
-        <Button
-          href="/auth/register"
-          size = "samll"
-          type= "secondary"
-          isScroll= {isScroll}
-        >
-          Sign Up
-        </Button>
+        {!logined && (
+          <Button
+            href={signupPage?`/auth/login`:`/auth/register`}
+            click={() =>  setSignupPage(!signupPage) }
+            size="small"
+            kind="secondary"
+            isScroll={isScroll}
+          >
+            {signupPage ? "Sign in" : " Sign Up"}
+          </Button>
+        )}
+
         <DropDown isScroll={isScroll} />
       </div>
     </header>

@@ -23,6 +23,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.0",
+    "react-hot-toast": "^2.6.0",
     "react-loader-spinner": "^8.0.0",
     "tailwindcss": "^4.0.0"
   },
