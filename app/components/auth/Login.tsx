@@ -5,8 +5,11 @@ import Button from "../ui/Button";
 import { RotatingLines } from "react-loader-spinner";
 import { Login } from "@/app/services/auth.service";
 import { ILoginForm } from "@/app/types";
+import { useRouter } from "next/navigation";
+
 
 const Signin = () => {
+   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formsValue, setFormsValue] = useState<ILoginForm>({
     email: "",
@@ -16,7 +19,7 @@ const Signin = () => {
     <form
       className="h-full  w-9/10"
       onSubmit={(e: FormEvent<HTMLFormElement>) =>
-        Login(e, setIsLoading, formsValue)
+        Login(e, setIsLoading, formsValue, router)
       }
     >
       <h4 className="font-medium text-cyan-900 text-2xl my-5">Log in</h4>
