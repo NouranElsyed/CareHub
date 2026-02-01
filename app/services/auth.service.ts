@@ -1,3 +1,4 @@
+"use client"
 import { FormEvent } from "react";
 import { api } from "../lib/api";
 import { ILoginForm, ISignupForm } from "../types";
