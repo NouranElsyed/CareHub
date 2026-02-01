@@ -3,48 +3,67 @@ import { FormEvent, useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { RotatingLines } from "react-loader-spinner";
-import { Login } from "@/app/services/auth.service";
+import { loginUser } from "@/app/services/auth.service"; // لاحظ استدعاء الـ service pure
 import { ILoginForm } from "@/app/types";
 import { useRouter } from "next/navigation";
 
-
 const Signin = () => {
-   const router = useRouter();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formsValue, setFormsValue] = useState<ILoginForm>({
     email: "",
     password: "",
   });
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const data = await loginUser(formsValue);
+
+      // ✅ هنا بس نستخدم localStorage و router
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("toastMsg", data.message);
+      }
+
+      router.push("/"); // نقل المستخدم للصفحة الرئيسية بعد login
+    } catch (err) {
+      console.log(err);
+      // هنا ممكن تضيفي toast أو رسالة خطأ للمستخدم
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <form
-      className="h-full  w-9/10"
-      onSubmit={(e: FormEvent<HTMLFormElement>) =>
-        Login(e, setIsLoading, formsValue, router)
-      }
+      className="h-full w-9/10 mx-auto"
+      onSubmit={handleSubmit}
     >
       <h4 className="font-medium text-cyan-900 text-2xl my-5">Log in</h4>
+
       <Input
         label="Email"
-        type={"email"}
-        onChange={(e) => {
-          console.log(e.target.value);
-          setFormsValue((prev) => ({ ...prev, email: e.target.value }));
-        }}
+        type="email"
+        value={formsValue.email}
+        onChange={(e) => setFormsValue((prev) => ({ ...prev, email: e.target.value }))}
       />
+
       <Input
         label="Password"
-        type={"password"}
-        onChange={(e) => {
-          console.log(e.target.value);
-          setFormsValue((prev) => ({ ...prev, password: e.target.value }));
-        }}
+        type="password"
+        value={formsValue.password}
+        onChange={(e) => setFormsValue((prev) => ({ ...prev, password: e.target.value }))}
       />
+
       <Button
         kind="primary"
         size="small"
-        className={` my-5 block w-fit mx-auto ${isLoading && "cursor-not-allowed  bg-[#4a7581c6]"} flex items-center gap-2`}
         type="submit"
         disabled={isLoading}
+        className={`my-5 block w-fit mx-auto flex items-center gap-2 ${isLoading ? "cursor-not-allowed bg-[#4a7581c6]" : ""}`}
       >
         {isLoading && (
           <RotatingLines
@@ -55,8 +74,6 @@ const Signin = () => {
             strokeWidth="5"
             animationDuration="0.75"
             ariaLabel="rotating-lines-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
           />
         )}
         submit
