@@ -1,10 +1,15 @@
 "use client";
+
 import { FormEvent, useState } from "react";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
+import { RotatingLines } from "react-loader-spinner";
 import { useAuth } from "../../hooks/auth/useAuth";
 import { ISignupForm } from "@/app/types";
 
 const Register = () => {
   const { signup, isLoading } = useAuth();
+
   const [formsValue, setFormsValue] = useState<ISignupForm>({
     name: "",
     email: "",
@@ -13,33 +18,61 @@ const Register = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signup(formsValue);
+    signup(formsValue); 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-9/10 mx-auto">
-      <h4>Create account</h4>
-      <input
+    <form className="h-full w-9/10" onSubmit={handleSubmit}>
+      <h4 className="font-medium text-cyan-900 text-2xl my-5">
+        Create account
+      </h4>
+
+      <Input
+        label="Name"
         type="text"
-        placeholder="Name"
-        value={formsValue.name}
-        onChange={(e) => setFormsValue({ ...formsValue, name: e.target.value })}
+        onChange={(e) =>
+          setFormsValue((prev) => ({ ...prev, name: e.target.value }))
+        }
       />
-      <input
+
+      <Input
+        label="Email"
         type="email"
-        placeholder="Email"
-        value={formsValue.email}
-        onChange={(e) => setFormsValue({ ...formsValue, email: e.target.value })}
+        onChange={(e) =>
+          setFormsValue((prev) => ({ ...prev, email: e.target.value }))
+        }
       />
-      <input
+
+      <Input
+        label="Password"
         type="password"
-        placeholder="Password"
-        value={formsValue.password}
-        onChange={(e) => setFormsValue({ ...formsValue, password: e.target.value })}
+        onChange={(e) =>
+          setFormsValue((prev) => ({ ...prev, password: e.target.value }))
+        }
       />
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? "Loading..." : "Register"}
-      </button>
+
+      <Button
+        kind="primary"
+        size="small"
+        className={`my-5 mx-auto flex w-fit items-center gap-2 ${
+          isLoading && "cursor-not-allowed bg-[#4a7581c6]"
+        }`}
+        type="submit"
+        disabled={isLoading}
+      >
+        {isLoading && (
+          <RotatingLines
+            visible
+            height="15"
+            width="15"
+            color="#fff"
+            strokeWidth="5"
+            animationDuration="0.75"
+            ariaLabel="loading"
+          />
+        )}
+        Submit
+      </Button>
     </form>
   );
 };

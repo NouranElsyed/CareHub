@@ -1,29 +1,24 @@
-"use client"
+"use client";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 const ToastMsg = () => {
-      const toastMsg = localStorage.getItem("toastMsg")
-  if(toastMsg){
-            toast.success(toastMsg, {
-          duration: 6000,
-          position: "top-center",
+  useEffect(() => {
+    const toastMsg = localStorage.getItem("toastMsg");
 
-          // Styling
-          style: {},
-          className: "",
+    if (toastMsg) {
+      toast.success(toastMsg, {
+        duration: 6000,
+        position: "top-center",
+        icon: "🎉",
+        removeDelay: 1000,
+      });
 
-          // Custom Icon
-          icon: "🎉",
+      localStorage.removeItem("toastMsg");
+    }
+  }, []);
 
-          // Additional Configuration
-          removeDelay: 1000,
-        });
-     localStorage.removeItem("toastMsg")
+  return null;
+};
 
-  }
-  return (
-   <></>
-  )
-}
-
-export default ToastMsg
+export default ToastMsg;

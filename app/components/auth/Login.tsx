@@ -3,7 +3,7 @@ import { FormEvent, useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { RotatingLines } from "react-loader-spinner";
-import { loginUser } from "@/app/services/auth.service"; // لاحظ استدعاء الـ service pure
+import { loginUser } from "@/app/services/auth.service"; 
 import { ILoginForm } from "@/app/types";
 import { useRouter } from "next/navigation";
 
@@ -22,16 +22,16 @@ const Signin = () => {
     try {
       const data = await loginUser(formsValue);
 
-      // ✅ هنا بس نستخدم localStorage و router
+
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("toastMsg", data.message);
       }
 
-      router.push("/"); // نقل المستخدم للصفحة الرئيسية بعد login
+      router.push("/");
     } catch (err) {
       console.log(err);
-      // هنا ممكن تضيفي toast أو رسالة خطأ للمستخدم
+    
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +63,7 @@ const Signin = () => {
         size="small"
         type="submit"
         disabled={isLoading}
-        className={`my-5 block w-fit mx-auto flex items-center gap-2 ${isLoading ? "cursor-not-allowed bg-[#4a7581c6]" : ""}`}
+        className={`my-5  w-fit mx-auto flex items-center gap-2 ${isLoading ? "cursor-not-allowed bg-[#4a7581c6]" : ""}`}
       >
         {isLoading && (
           <RotatingLines
