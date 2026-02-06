@@ -39,7 +39,7 @@ const Button = ({
         */
   }
 
-  const classes = `px-2 lg:px-3 py-1 rounded-lg whitespace-nowrap font-medium  transition duration-250 ${className} ${disable ? "cursor-not-allowed":" cursor-pointer"}
+  const classes = `px-2 lg:px-3 py-1 rounded-lg whitespace-nowrap font-medium  transition duration-180 ${className} ${disable ? "cursor-not-allowed":" cursor-pointer"}
           ${
             kind === "primary"
               ? `bg-cyan-800 text-white ${disable ? "bg-cyan-800/30 " : "hover:bg-cyan-600 "}`

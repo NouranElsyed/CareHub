@@ -34,3 +34,49 @@ export const daysOfWeek = [
   "Friday",
   "Saturday",
 ];
+
+export interface bookedSuccess {
+  appointment: {
+    doctor: string;
+    patient: string;
+    bookedBy: string;
+    appointmentDate: string;
+    dayOfWeek: number;
+
+    countdown: {
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+      expired: boolean;
+    };
+    createdAt: string;
+    history: {
+      action: string;
+      by: string;
+      date: string;
+      details: string;
+      id: string;
+      _id: string;
+    };
+    id: string;
+    isForDependent: boolean;
+    lateFee: number;
+    notes: string;
+
+    paymentStatus: string;
+    reminderSent: boolean;
+    status: string;
+    time: string;
+
+    timeUntilAppointment: number;
+    updatedAt: string;
+
+    _id: string;
+  };
+  feeDetails: { consultationFee: number; lateFee: number; total: number };
+  message: string;
+  patientInfo: { id: string; name: string; type: string };
+  restrictions: { canBookAgain: boolean; nextBookingAllowed: string };
+  success: boolean;
+}

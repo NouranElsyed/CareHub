@@ -3,59 +3,41 @@ import { FormEvent, useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { RotatingLines } from "react-loader-spinner";
-import { loginUser } from "@/app/services/auth.service"; 
 import { ILoginForm } from "@/app/types";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/auth/useAuth";
 
 const Signin = () => {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const { Login, isLoading } = useAuth();
+
   const [formsValue, setFormsValue] = useState<ILoginForm>({
     email: "",
     password: "",
   });
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const data = await loginUser(formsValue);
-
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("toastMsg", data.message);
-      }
-
-      router.push("/");
-    } catch (err) {
-      console.log(err);
-    
-    } finally {
-      setIsLoading(false);
-    }
+    Login(formsValue); 
   };
 
   return (
-    <form
-      className="h-full w-9/10 mx-auto"
-      onSubmit={handleSubmit}
-    >
+    <form className="h-full w-9/10 mx-auto" onSubmit={handleSubmit}>
       <h4 className="font-medium text-cyan-900 text-2xl my-5">Log in</h4>
 
       <Input
         label="Email"
         type="email"
         value={formsValue.email}
-        onChange={(e) => setFormsValue((prev) => ({ ...prev, email: e.target.value }))}
+        onChange={(e) =>
+          setFormsValue((prev) => ({ ...prev, email: e.target.value }))
+        }
       />
 
       <Input
         label="Password"
         type="password"
         value={formsValue.password}
-        onChange={(e) => setFormsValue((prev) => ({ ...prev, password: e.target.value }))}
+        onChange={(e) =>
+          setFormsValue((prev) => ({ ...prev, password: e.target.value }))
+        }
       />
 
       <Button

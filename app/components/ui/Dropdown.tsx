@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function DropDown({ isScroll }: { isScroll: boolean }) {
   return (
-    <div className="md:hidden  z-50">
+    <div className="md:hidden  z-40">
       <Menu>
         <MenuButton
           className={`inline-flex items-center gap-2 rounded-md bg-amber-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none focus:outline-white hover:bg-amber-500 data-open:bg-amber-500 cursor-pointer`}
@@ -16,7 +16,7 @@ export default function DropDown({ isScroll }: { isScroll: boolean }) {
           transition
           anchor="bottom end"
           modal={false}
-          className={`w-52 z-50 origin-top-right rounded-xl border border-white/5 bg-cyan-950/95 p-1 text-sm/6 text-white transition duration-100 ease-out ${
+          className={`w-52 z-40 origin-top-right rounded-xl border border-white/5 bg-cyan-950/95 p-1 text-sm/6 text-white transition duration-100 ease-out ${
             isScroll
               ? "[--anchor-gap:--spacing(5)]"
               : "[--anchor-gap:--spacing(2)]"

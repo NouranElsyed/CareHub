@@ -9,12 +9,12 @@ const getDoctors = async (specialitie:string) => {
   const encoded = encodeURIComponent(specialitie);
   // console.log(encoded)
  const res = await api.get(`/doctors?specialization=${encoded}`)
-//  console.log(res)
+ console.log(res)
  return res.data
 };
 const getDoctor = async (id:string) => {
  const res = await api.get(`/doctors/${id}`)
-//  console.log(res)
+ console.log(res)
  return res.data
 };
 

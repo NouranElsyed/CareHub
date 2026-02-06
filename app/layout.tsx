@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ReactQueryProvider from "./providers/ReactQueryProvider";
+import Providers from "./providers/Providers";
 import Header from "./components/header/Header";
 import { Toaster } from 'react-hot-toast';
 const geistSans = Geist({
@@ -28,14 +28,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-y-scroll">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased my-0 min-h-screen flex justify-center items-center `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased my-0 min-h-screen flex justify-center items-center relative`}
       >
-        <ReactQueryProvider>
+        <Providers>
           <div className="hero-bg" />
           <Header />
           <main className="z-10  w-full"> {children}</main>
            <Toaster />
-        </ReactQueryProvider>
+        </Providers>
       </body>
     </html>
   );

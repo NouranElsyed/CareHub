@@ -1,11 +1,14 @@
 "use client";
 import { useMotionValueEvent, useScroll } from "motion/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import DropDown from "../ui/Dropdown";
 import Button from "../ui/Button";
 import Link from "next/link";
 import { Stethoscope } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { login, logout } from "@/app/store/features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 export const navList = [
   { nav: "Home", href: "/" },
@@ -13,20 +16,18 @@ export const navList = [
 ];
 
 const Header = () => {
-  const pathname = usePathname();
-
-  const [logined, setLogined] = useState(null);
-  const [signupPage, setSignupPage] = useState(false);
+const pathname = usePathname();
+const signupPage = pathname === "/auth/register";
   const [isScroll, setIsScroll] = useState(false);
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) setLogined(JSON.parse(user));
-  }, []);
 
-  useEffect(() => {
-    setSignupPage(pathname === "/auth/register");
-  }, [pathname]);
+const user = useSelector((state: RootState) => state.auth.user);
+const dispatch = useDispatch();
+useEffect(()=>{
+  const user = localStorage.getItem("user")
+   if(user)  dispatch(login(JSON.parse(user)))
+},[dispatch])
+
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (current) => {
@@ -65,7 +66,7 @@ const Header = () => {
       </ul>
 
       <div className="flex items-center gap-4">
-        {!logined && (
+        {!user ? (
           <Button
             href={signupPage ? "/auth/login" : "/auth/register"}
             size="small"
@@ -74,8 +75,16 @@ const Header = () => {
           >
             {signupPage ? "Sign in" : "Sign Up"}
           </Button>
-        )}
 
+        ):(   <Button
+            size="small"
+            kind="secondary"
+            isScroll={isScroll}
+            onClick={()=>{ dispatch(logout())}}
+          >
+           logout
+          </Button>)
+}
         <DropDown isScroll={isScroll} />
       </div>
     </header>
