@@ -18,7 +18,7 @@ export const doctorSlice = createSlice({
   name: "doctor",
   initialState,
   reducers: {
-    setShowedDoctor: (state, action: PayloadAction<{doctor:IDoctor,isModalOpen:boolean}>) => {
+    setShowedDoctor: (state, action: PayloadAction<{doctor:IDoctor|null,isModalOpen:boolean}>) => {
       state.doctor = action.payload.doctor;
       state.isModalOpen = action.payload.isModalOpen;
 
