@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const getSpecialitie  = async () => {
  const res = await api.get(`/doctors/specializations`)
- console.log(res)
+ console.log(res.data)
  return res.data
 };
 

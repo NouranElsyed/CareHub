@@ -1,5 +1,7 @@
 import { api } from "@/app/lib/api";
+import { RootState } from "@/app/store";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 {
   /*===>> functions */
@@ -8,20 +10,29 @@ import { useQuery } from "@tanstack/react-query";
 const getDoctors = async (specialitie:string) => {
   const encoded = encodeURIComponent(specialitie);
   // console.log(encoded)
- const res = await api.get(`/doctors?specialization=${encoded}`)
- console.log(res)
- return res.data
+  const res = await api.get(`/doctors?specialization=${encoded}`)
+  console.log(res.data)
+  return res.data
 };
 const getDoctor = async (id:string) => {
- const res = await api.get(`/doctors/${id}`)
- console.log(res)
- return res.data
+  console.log(id)
+  const res = await api.get(`/doctors/${id}`)
+  console.log(res)
+  return res.data
 };
 
 
-export const useDoctor = () => {
-    /// get doctors
-  const GetDoctors = (specialitie: string) => {
+
+export const useGetDoctor = () => {
+  const doctorState = useSelector((state: RootState) => state.doctor);
+  console.log(doctorState.doctorId)
+ return useQuery({
+      queryKey: ["doctor", doctorState.doctorId ],
+      queryFn: ()=> getDoctor(doctorState.doctorId!),
+      staleTime: 60 * 1000,
+    });}
+
+export const useGetDoctors = (specialitie: string) => {
     return useQuery({
       queryKey: ["doctors", { specialitie }],
       queryFn: ()=> getDoctors(specialitie),
@@ -30,16 +41,3 @@ export const useDoctor = () => {
   };
 
   
-  const GetDoctor = (id: string) => {
-    return useQuery({
-      queryKey: ["doctor",  id ],
-      queryFn: ()=> getDoctor(id),
-      staleTime: 60 * 1000,
-    });
-  };
-
-  
-  return {
-    GetDoctors,GetDoctor
-  };
-};

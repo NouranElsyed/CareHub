@@ -8,9 +8,14 @@ import { useDispatch } from "react-redux";
 import { login } from "@/app/store/features/authSlice";
 
 export const useAuth = () => {
+
+  
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+
+
+
   const signup = async (formsValue: ISignupForm) => {
     setIsLoading(true);
     try {

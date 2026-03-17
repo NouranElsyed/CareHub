@@ -58,7 +58,7 @@ const Signin = () => {
             ariaLabel="rotating-lines-loading"
           />
         )}
-        submit
+        Submit
       </Button>
     </form>
   );

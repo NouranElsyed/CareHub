@@ -1,28 +1,33 @@
-import { IDoctor } from "@/app/types";
+
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 
 
 export interface doctorState {
-  doctor: IDoctor | null;
-  isModalOpen:boolean
+  doctorId: string | null;
+  isModalOpen:boolean;
+  doctorProfileLoading:boolean
 }
 
 const initialState: doctorState = {
-  doctor:  null,
-  isModalOpen: false
+  doctorId:  null,
+  isModalOpen: false,
+  doctorProfileLoading:true
 };
 
 export const doctorSlice = createSlice({
   name: "doctor",
   initialState,
   reducers: {
-    setShowedDoctor: (state, action: PayloadAction<{doctor:IDoctor|null,isModalOpen:boolean}>) => {
-      state.doctor = action.payload.doctor;
+    setShowedDoctor: (state, action: PayloadAction<{doctorId:string|null,isModalOpen:boolean}>) => {
+      state.doctorId = action.payload.doctorId;
       state.isModalOpen = action.payload.isModalOpen;
 
     },
+    setdoctorProfileLoading:(state,action: PayloadAction<{doctorProfileLoading:boolean}>)=>{
+      state.doctorProfileLoading = action.payload.doctorProfileLoading
+    }
     
   },
 });

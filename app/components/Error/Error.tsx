@@ -8,9 +8,7 @@ const ErrorPage = ({
   showRetry?: boolean;
 }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 w-9/10 md:w-8/10 xl:w-1/2 mx-auto  md:bg-blue-500
- lg:bg-green-500
- xl:bg-red-500">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 w-9/10 md:w-8/10 xl:w-1/2 mx-auto  ">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
           <span className="text-3xl text-red-600">⚠️</span>

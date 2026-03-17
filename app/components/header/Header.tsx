@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { login, logout } from "@/app/store/features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store";
+import { api } from "@/app/lib/api";
 
 export const navList = [
   { nav: "Home", href: "/" },
@@ -16,18 +17,28 @@ export const navList = [
 ];
 
 const Header = () => {
-const pathname = usePathname();
-const signupPage = pathname === "/auth/register";
+  const pathname = usePathname();
+  const signupPage = pathname === "/auth/register";
   const [isScroll, setIsScroll] = useState(false);
 
-
-const user = useSelector((state: RootState) => state.auth.user);
-const dispatch = useDispatch();
-useEffect(()=>{
-  const user = localStorage.getItem("user")
-   if(user)  dispatch(login(JSON.parse(user)))
-},[dispatch])
-
+  const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const restoreSession = async () => {
+      try{
+        console.log("////////////////////")
+        const res = await api.get("/auth/me");
+        if (res.data) dispatch(login(res.data));
+        console.log(res.data)
+        return res.data;
+      }catch(error){
+        console.log(error)
+        dispatch(logout());
+      }
+    };
+    const user = restoreSession();
+    console.log(user);
+  }, [dispatch]);
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (current) => {
@@ -75,16 +86,18 @@ useEffect(()=>{
           >
             {signupPage ? "Sign in" : "Sign Up"}
           </Button>
-
-        ):(   <Button
+        ) : (
+          <Button
             size="small"
             kind="secondary"
             isScroll={isScroll}
-            onClick={()=>{ dispatch(logout())}}
+            onClick={() => {
+              dispatch(logout());
+            }}
           >
-           logout
-          </Button>)
-}
+            logout
+          </Button>
+        )}
         <DropDown isScroll={isScroll} />
       </div>
     </header>

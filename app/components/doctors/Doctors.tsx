@@ -1,6 +1,6 @@
 "use client";
 import { useGetSpecialitie } from "@/app/hooks/department/useGetDep";
-import { useDoctor } from "@/app/hooks/doctors/useGetDoctors";
+import { useGetDoctors } from "@/app/hooks/doctors/useGetDoctors";
 import { useState } from "react";
 import { IDoctor } from "../../types/index";
 import Button from "../ui/Button";
@@ -13,12 +13,11 @@ import { setShowedDoctor } from "@/app/store/features/doctorSlice";
 const Doctors = () => {
   const [specialitie, setSpecialitie] = useState("all");
 
-  const { data: specialties = [], isLoading: isSpecialtiesLoading } =
+  const { data: specialties , isLoading: isSpecialtiesLoading } =
     useGetSpecialitie();
-  const { data: Doctors = [], isLoading: isDoctorsLoading } =
-    useDoctor().GetDoctors(specialitie);
-  console.log(Doctors);
-  const specialization = ["all", ...specialties];
+  const { data: DoctorsRes, isLoading: isDoctorsLoading } = useGetDoctors(specialitie);
+    console.log(DoctorsRes)
+  const specializations = ["all", ...(specialties?.specializations ?? [])];
 const dispatch = useDispatch();
   if (isSpecialtiesLoading && isDoctorsLoading) return <Loading />;
   return (
@@ -30,7 +29,7 @@ const dispatch = useDispatch();
         </h4>
         <div className="flex gap-5 text-lg my-3  flex-wrap">
           {(isSpecialtiesLoading && <Loading />) ||
-            specialization.map((specialtie: string, index: number) => {
+            specializations.map((specialtie: string, index: number) => {
               return (
                 <button
                   type="button"
@@ -52,12 +51,12 @@ const dispatch = useDispatch();
             })}
         </div>
       </div>
-      {/* {openCard && <DoctorModal  isOpen={true} />} */}
+
 
       <div className="grid grid-cols-1   mx-auto  w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 my-7">
 
         {(isDoctorsLoading && <Loading />) ||
-          Doctors.map((doctor: IDoctor, index: number) => {
+          DoctorsRes?.doctors.map((doctor: IDoctor, index: number) => {
             return (
               <div
                 key={index}
@@ -70,6 +69,7 @@ const dispatch = useDispatch();
                       alt={"doctor photo"}
                       src={doctor.user.image}
                       fill
+                      sizes="200"
                       className="object-cover"
                     />
                   </div>
@@ -98,8 +98,8 @@ const dispatch = useDispatch();
                 <div className="flex flex-col gap-3 justify-center mt-5 px-2 w-full text-center my-5">
                   <Button
                     onClick={() => {
-
-                      dispatch(setShowedDoctor({doctor, isModalOpen:true}))
+console.log({doctorId:doctor._id, isModalOpen:true})
+                      dispatch(setShowedDoctor({doctorId:doctor._id, isModalOpen:true}))
                     }}
                     size="small"
                     kind="primary"

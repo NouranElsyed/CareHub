@@ -80,3 +80,56 @@ export interface bookedSuccess {
   restrictions: { canBookAgain: boolean; nextBookingAllowed: string };
   success: boolean;
 }
+
+export interface Idates {
+  savailableSlots: number;
+  date: string;
+  dayName: string;
+  availableSlots: number;
+}
+export const Days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+export interface Iappointment {
+  appointmentDate: string;
+  bookedBy: string;
+  canCancel: boolean;
+  canReschedule: boolean;
+  countdown: {
+    days: number;
+    hours: number;
+    minutes: number;
+    expired: boolean;
+    totalMs: number;
+  };
+  createdAt: string;
+  dayOfWeek: number;
+  doctor: string;
+  history: {
+    action: string;
+    by: string;
+    date: string;
+    details: string;
+    _id: string;
+  }[];
+
+  _id: string;
+  isForDependent: boolean;
+  isPast: boolean;
+  lateFee: number;
+  notes: string;
+  patient: string;
+  paymentStatus: string;
+  reminderSent: boolean;
+  status: string;
+  time: string;
+  timeRemaining: string;
+  updatedAt: string;
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 interface IButton extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  kind: "primary" | "secondary";
+  kind: "primary" | "secondary"| "cancel";
   size: "large" | "small";
   href?: string;
   isScroll?: boolean;
@@ -42,8 +42,14 @@ const Button = ({
   const classes = `px-2 lg:px-3 py-1 rounded-lg whitespace-nowrap font-medium  transition duration-180 ${className} ${disable ? "cursor-not-allowed":" cursor-pointer"}
           ${
             kind === "primary"
-              ? `bg-cyan-800 text-white ${disable ? "bg-cyan-800/30 " : "hover:bg-cyan-600 "}`
-              : ` bg-transparent border-2 ${disable ? "" : " hover:bg-amber-600 hover:border-amber-600 hover:text-white"} ${
+             && `bg-cyan-800 text-white ${disable ? "bg-cyan-800/30 " : "hover:bg-cyan-700 "}`
+             ||
+              kind === "cancel" &&
+              ` bg-transparent border-2 ${disable ? "" : " hover:bg-red-600 hover:border-red-600 hover:text-white"} ${
+                  isScroll
+                    ? `border-gray-200/70 text-white  `
+                    : `  border-red-600/70   text-red-600 `}`
+              || kind === "secondary" && ` bg-transparent border-2 ${disable ? "" : " hover:bg-amber-600 hover:border-amber-600 hover:text-white"} ${
                   isScroll
                     ? `border-gray-200/70 text-white  `
                     : `  border-amber-600/70   text-amber-600 `

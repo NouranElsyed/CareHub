@@ -1,0 +1,238 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import {
+  useBookAppoitment,
+  useGetDoctorAppoitment,
+} from "@/app/hooks/appoiment/useAppoiment";
+
+import { useState } from "react";
+import Loading from "../ui/Loading";
+import ErrorPage from "../Error/Error";
+import {
+  Calendar,
+  // CheckCheck,
+  CircleCheckBig
+} from "lucide-react";
+import { daysOfWeek } from "@/app/types";
+import Button from "../ui/Button";
+import ShowAppoitment from "./ShowAppoitment";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store";
+import { setAppointment } from "@/app/store/features/appointmentSlice";
+import { useQueryClient } from "@tanstack/react-query";
+
+const BookingCard = ({ doctorData }: { doctorData: any }) => {
+  //* states*//
+  const [day, setDay] = useState<number | null>(null);
+  const [date, setDate] = useState<string>("");
+  const [time, setTime] = useState<string>("");
+ const queryClient = useQueryClient()
+  const userAppoit = useSelector((state:RootState)=>state.appointment.appointments)?true:false
+  const dispatch = useDispatch();
+
+  console.log(doctorData.myAppointment);
+  //* call hooks*//
+
+  const { data: checkAppoit, isLoading: isAppoitLoadding } =
+    useGetDoctorAppoitment(doctorData.doctor.id!, day!, time);
+  console.log(checkAppoit);
+  const {
+    mutate: bookAppointment,
+    isPending: isBookAppoitLoadding,
+    isSuccess: isBookSuccess,
+    error: bookingError,
+    
+  } = useBookAppoitment();
+
+  if (bookingError) {
+    return (
+      <ErrorPage
+        title="Booking Failed"
+        message={
+          (bookingError as any)?.response?.data?.message || "Unable to book"
+        }
+      />
+    );
+  }
+
+  return (
+    <div className="w-full md:w-1/3 p-5 rounded-2xl h-full bg-white shadow-xl shadow-gray-700/20 flex flex-col gap-5">
+      <h5 className="text-2xl font-semibold text-cyan-900">Book appointment</h5>
+      <div className="bg-cyan-200/15 rounded-2xl px-4 py-5 ">
+        <div className="flex flex-col">
+          <h5 className="text-gray-600 text-sm">Consultation price</h5>
+          <div className="flex justify-between items-center">
+            <span className="text-black font-bold text-3xl">
+              {doctorData.doctor?.price} <span className="text-sm">EG</span>
+            </span>
+            <div className="text-cyan-800">
+              {" "}
+              <CircleCheckBig />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {userAppoit ? (
+        <div className="flex flex-col justify-between items-center gap-4">
+         
+
+          {/* Show Appointment Component */}
+          <ShowAppoitment appoitment={doctorData.myAppointment} doctorData={doctorData}/>
+
+        </div>
+      ) : (
+        <>
+          <div className="flex gap-3 items-center">
+            
+            {isBookSuccess ? (
+              <div className="text-cyan-600 flex flex-col w-full items-center gap-4">
+              {/* <Calendar />
+              <span className="text-lg font-medium text-black">Choose Day</span>
+            </div>
+          </div>
+          <div
+            className={`grid grid-cols-1 ${isBookSuccess ? "" : "lg:grid-cols-2"}  gap-3 `}
+            > */}
+            <ShowAppoitment appoitment={doctorData.myAppointment} doctorData={doctorData}/>
+
+          </div>
+        
+            ) : (
+              doctorData?.doctor?.availableSlots?.map(
+                (slot: {
+                  day: number;
+                  from: string;
+                  to: string;
+                  duration: number;
+                  limitPatients: number;
+                  _id: string;
+                }) => (
+                  <div
+                    key={slot._id}
+                    className={`border border-gray-500/30 flex flex-col items-center justify-center 
+      text-sm lg:text-md p-2 lg:p-3 rounded-lg cursor-pointer font-semibold transition-all duration-300
+      ${
+        day === slot.day
+          ? "bg-gradient-to-r from-cyan-700 to-blue-700 text-white shadow-lg scale-105"
+          : "bg-white text-cyan-800 hover:bg-cyan-50 hover:border-cyan-300"
+      }`}
+                    onClick={() => {
+                      setDay(day === slot.day ? null : slot.day);
+                      setTime(slot.from);
+                    }}
+                  >
+                    <span>{daysOfWeek[slot.day]}</span>
+                    <span>{slot.from}</span>
+                  </div>
+                ),
+              )
+            )}
+          </div>
+
+          {!isBookSuccess && day !== null && (
+            <div className="space-y-3">
+              <h6 className="text-sm font-medium text-gray-600 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-amber-600" />
+                Available Dates
+              </h6>
+              <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+                {isAppoitLoadding ? (
+                  <div className="flex justify-center py-8">
+                    <Loading />
+                  </div>
+                ) : (
+                  checkAppoit?.availableDates?.map(
+                    (
+                      dates: {
+                        date: string;
+                        dayName: string;
+                        available: boolean;
+
+                        dayNumber: number;
+                        remaining: number;
+                        time: string;
+                        formattedDate: string;
+                      },
+                      index: number,
+                    ) => {
+                      if (dates.remaining === 0) return null;
+                      return (
+                        <div
+                          key={index}
+                          className={`border flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-300
+                            ${
+                              date === dates.date
+                                ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-600 shadow-lg"
+                                : "bg-white text-amber-700 border-amber-200 hover:bg-amber-50"
+                            }`}
+                          onClick={() => {
+                            setDate(date === dates.date ? "" : dates.date);
+                          }}
+                        >
+                          <span className="font-medium">
+                            {dates.formattedDate}
+                          </span>
+                          <span className="text-xs px-2 py-1 rounded-full bg-white/20">
+                            {dates.remaining} slots
+                          </span>
+                        </div>
+                      );
+                    },
+                  )
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isBookSuccess && (
+            <Button
+              kind="primary"
+              size="large"
+              disable={!date || !day}
+              className={`mt-4 ${
+                !date || !day
+                  ? "opacity-50 cursor-not-allowed"
+                  : "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
+              }`}
+              onClick={() => {
+                console.log("BOOK DATA:", {
+                  doctorId: doctorData.doctor.id!,
+                  day,
+                  date,
+                  time,
+                });
+
+                bookAppointment({
+                  id: doctorData.doctor.id!,
+                  date: date!,
+                  time,
+                }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["doctorAppointment"],
+      });
+    },
+  });
+
+// dispatch(setAppointment())
+              }}
+            >
+              {isBookAppoitLoadding ? (
+                <div className="flex items-center gap-2 ">
+                  <Loading />
+                  <span>Booking...</span>
+                </div>
+              ) : (
+                "Confirm Booking"
+              )}
+            </Button>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default BookingCard;
