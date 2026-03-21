@@ -8,6 +8,7 @@ import Loading from "@/app/components/ui/Loading";
 import ErrorPage from "@/app/components/Error/Error";
 import { useDispatch } from "react-redux";
 import { setShowedDoctor } from "@/app/store/features/doctorSlice";
+import { useEffect } from "react";
 
 const DoctorProfile = () => {
   //* get id from params*//
@@ -15,7 +16,11 @@ const DoctorProfile = () => {
   const doctorId = id?.toString();
   //* call hooks*//
   const dispatch = useDispatch();
-   dispatch(setShowedDoctor({doctorId:doctorId!, isModalOpen:false}))
+useEffect(() => {
+  if (doctorId) {
+    dispatch(setShowedDoctor({ doctorId: doctorId, isModalOpen: false }));
+  }
+}, [doctorId, dispatch]);   
   const { data, isLoading, isError, isSuccess, error } = useGetDoctor();
   //* loading and Errors return **//
   if (isLoading) {

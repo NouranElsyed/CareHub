@@ -13,7 +13,6 @@ const DoctorCard = ({
 }) => {
 console.log(doctorData)
   return (
-    // <div className="absolute top-5 left-10 p-15">
     <div
       className={`flex ${isModal ? "flex-col w-full" : "flex-col bg-white shadow-xl shadow-gray-700/20 w-full md:w-2/3 md:flex-row  md:items-start "} items-center  p-4 gap-5 rounded-3xl `}
     >

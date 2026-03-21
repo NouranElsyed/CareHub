@@ -3,25 +3,28 @@
 
 import {
   useBookAppoitment,
-  useCancelAppoitment,
   useGetDoctorAppoitment,
 } from "@/app/hooks/appoiment/useAppoiment";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Loading from "../ui/Loading";
 import ErrorPage from "../Error/Error";
 import { Calendar, CircleCheckBig } from "lucide-react";
 import { daysOfWeek } from "@/app/types";
 import Button from "../ui/Button";
 import ShowAppoitment from "./ShowAppoitment";
+import { useQueryClient } from "@tanstack/react-query";
 import { Rings } from "react-loader-spinner";
 
 const BookingCard = ({ doctorData }: { doctorData: any }) => {
   const [day, setDay] = useState<number | null>(null);
   const [date, setDate] = useState<string>("");
   const [time, setTime] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
- const [userAppoit, setUserAppoit]  = useState<any>(!!doctorData.myAppointment)
+  const queryClient = useQueryClient();
+
+  const userAppoit = !!doctorData.myAppointment;
 
   const { data: checkAppoit, isLoading: isAppoitLoadding } =
     useGetDoctorAppoitment(doctorData.doctor.id!, day!, time);
@@ -32,7 +35,37 @@ const BookingCard = ({ doctorData }: { doctorData: any }) => {
     isSuccess: isBookSuccess,
     error: bookingError,
   } = useBookAppoitment();
-const {mutate: cancelAppointment} = useCancelAppoitment()
+
+  const refreshData = useCallback(() => {
+    queryClient.invalidateQueries({ 
+      queryKey: ["doctorAppointment", doctorData.doctor.id] 
+    });
+    queryClient.invalidateQueries({ 
+      queryKey: ["doctorSlots", doctorData.doctor.id] 
+    });
+    setRefreshKey(prev => prev + 1);
+  }, [doctorData.doctor.id, queryClient]);
+
+  // ✅ حل التحذير: استخدام useEffect مع setTimeout
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isBookSuccess) {
+      const timer = setTimeout(() => {
+        if (isMounted) {
+          setDay(null);
+          setDate("");
+          refreshData();
+        }
+      }, 100);
+
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+      };
+    }
+  }, [isBookSuccess, refreshData]);
+
   if (bookingError) {
     return (
       <ErrorPage
@@ -45,7 +78,7 @@ const {mutate: cancelAppointment} = useCancelAppoitment()
   }
 
   return (
-    <div className="w-full md:w-1/3 p-5 rounded-2xl h-full bg-white shadow-xl shadow-gray-700/20 flex flex-col gap-5">
+    <div key={refreshKey} className="w-full md:w-1/3 p-5 rounded-2xl h-full bg-white shadow-xl shadow-gray-700/20 flex flex-col gap-5">
       <h5 className="text-2xl font-semibold text-cyan-900">Book appointment</h5>
       <div className="bg-cyan-200/15 rounded-2xl px-4 py-5 ">
         <div className="flex flex-col">
@@ -61,40 +94,26 @@ const {mutate: cancelAppointment} = useCancelAppoitment()
         </div>
       </div>
 
-      {userAppoit || isBookSuccess ? (
+      {userAppoit ? (
         <div className="flex flex-col justify-between items-center gap-4">
-          {isBookSuccess ? (
-            <div className="text-cyan-600 flex flex-col w-full items-center gap-4">
-              <div className="text-green-600 font-bold text-lg">
-                ✓ Appointment booked successfully!
-              </div>
-              <div className="text-gray-500 text-sm">
-                Your appointment has been confirmed.
-              </div>
-            </div>
-          ) : (
-            <></>
-          )}
           <ShowAppoitment
             appoitment={doctorData.myAppointment}
             doctorData={doctorData}
+            onChange={refreshData}
           />
-          <Button onChange={()=>{}} kind="secondary" size="large" className="w-8/10">
-            Edit
-          </Button>
-          <Button onClick={()=>{
-                  console.log(doctorData.myAppointment._id)
-            cancelAppointment({id:doctorData.myAppointment._id})
-            setUserAppoit(null) 
-            }} kind="cancel" size="large" className="w-8/10">
-            Cancel
-          </Button>
         </div>
       ) : (
         <>
           <div className="flex gap-3 items-center flex-wrap">
             {isBookSuccess ? (
-              <></>
+              <div className="text-cyan-600 flex flex-col w-full items-center gap-4">
+                <div className="text-green-600 font-bold text-lg">
+                  ✓ Appointment booked successfully!
+                </div>
+                <div className="text-gray-500 text-sm">
+                  Your appointment has been confirmed.
+                </div>
+              </div>
             ) : (
               doctorData?.doctor?.availableSlots?.map(
                 (slot: {
@@ -181,11 +200,13 @@ const {mutate: cancelAppointment} = useCancelAppoitment()
                   : "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
               }`}
               onClick={() => {
-                bookAppointment({
-                  id: doctorData.doctor.id!,
-                  date: date!,
-                  time,
-                });
+                bookAppointment(
+                  {
+                    id: doctorData.doctor.id!,
+                    date: date!,
+                    time,
+                  }
+                );
               }}
             >
               {isBookAppoitLoadding ? (

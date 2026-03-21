@@ -8,7 +8,7 @@ const page = () => {
     <section className=" flex text-white flex-col relative">
       <DoctorsHero />
       <Doctors />
-      <DoctorModal modal={true} />
+      <DoctorModal modal={true} /> 
     </section>
   );
 };
