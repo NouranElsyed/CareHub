@@ -76,15 +76,15 @@ const {mutate: cancelAppointment} = useCancelAppoitment()
             <></>
           )}
           <ShowAppoitment
-            appoitment={doctorData.myAppointment}
+            appoitment={doctorData?.myAppointment}
             doctorData={doctorData}
           />
           <Button onChange={()=>{}} kind="secondary" size="large" className="w-8/10">
             Edit
           </Button>
           <Button onClick={()=>{
-                  console.log(doctorData.myAppointment._id)
-            cancelAppointment({id:doctorData.myAppointment._id})
+                  console.log(doctorData?.myAppointment?._id)
+            cancelAppointment({id:doctorData?.myAppointment?._id})
             setUserAppoit(null) 
             }} kind="cancel" size="large" className="w-8/10">
             Cancel

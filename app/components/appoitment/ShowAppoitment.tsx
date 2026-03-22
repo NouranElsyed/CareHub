@@ -10,13 +10,11 @@ import {
   Timer,
   CalendarClock,
 } from "lucide-react";
-import Button from "../ui/Button";
-import { useCancelAppoitment } from "@/app/hooks/appoiment/useAppoiment";
+// import Button from "../ui/Button";
 
 const ShowAppoitment = ({
   appoitment,
   doctorData,
-  onChange,
 }: {
   appoitment?: any | null;
   doctorData?: any | null;
@@ -28,16 +26,12 @@ const ShowAppoitment = ({
     minutes: 0,
     seconds: 0,
   });
-
-  const { mutate: cancelAppointment, isSuccess: isCancelSuccess } =
-    useCancelAppoitment();
-
   useEffect(() => {
     console.log(appoitment);
     if (!appoitment?.appointmentDate) return;
 
     const calculateTimeLeft = () => {
-      const appointmentTime = new Date(appoitment.appointmentDate).getTime();
+      const appointmentTime = new Date(appoitment?.appointmentDate).getTime();
       const now = new Date().getTime();
       const difference = appointmentTime - now;
 
@@ -58,11 +52,7 @@ const ShowAppoitment = ({
     return () => clearInterval(timer);
   }, [appoitment]);
 
-  useEffect(() => {
-    if (isCancelSuccess && onChange) {
-      onChange();
-    }
-  }, [isCancelSuccess, onChange]);
+
 
   if (!appoitment || !doctorData) {
     return (
@@ -73,7 +63,7 @@ const ShowAppoitment = ({
   }
 
   const date = appoitment?.appointmentDate
-    ? new Date(appoitment.appointmentDate)
+    ? new Date(appoitment?.appointmentDate)
     : null;
 
   const formattedDate = date
@@ -117,12 +107,7 @@ const ShowAppoitment = ({
       default:
         return null;
     }
-  };
-
-  const handleCancel = () => {
-    if (!appoitment?._id) return;
-    cancelAppointment({ id: appoitment._id });
-  };
+  }
 
   return (
     <>
